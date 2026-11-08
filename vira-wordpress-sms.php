@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       افزونه ورود و ثبت نام پیامکی ویرا
  * Plugin URI:        https://vira-team.com
- * Description:       ورود و ثبت‌نام وردپرس با شماره موبایل و کد یک‌بارمصرف پیامکی؛ سازگار با ووکامرس و ippanel.
+ * Description:       Passwordless WordPress login and registration with mobile numbers and one-time SMS codes; compatible with WooCommerce and IPPanel.
  * Version:           0.4.0
  * Author:            محمود کاظمی
  * Author URI:        https://vira-team.com

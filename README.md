@@ -1,201 +1,130 @@
-# افزونه ورود و ثبت نام پیامکی ویرا
+# Vira SMS Login for WordPress
 
-ورود و ثبت نام در وردپرس با شماره موبایل و کد یکبارمصرف پیامکی، بدون رمز عبور، سازگار با ووکامرس و متصل به سامانه پیام کوتاه ippanel.
+Passwordless WordPress login and registration with Iranian mobile numbers and one-time SMS codes. The plugin integrates with IPPanel and works with or without WooCommerce.
 
-## وضعیت
-
-نوشته شده و روی سایت آزمایش شده است. هیچ پیامکی در جریان آزمون‌ها فرستاده نشد: درگاه پیامک با یک سرویس تقلبی جایگزین شد و درخواست‌های خروجی بررسی شدند.
-
-## مشخصات افزونه
-
-| مورد | مقدار |
+| | |
 | --- | --- |
-| نام | افزونه ورود و ثبت نام پیامکی ویرا |
-| نویسنده | محمود کاظمی |
-| سایت نویسنده | [vira-team.com](https://vira-team.com) |
-| نسخه | 0.4.0 |
-| شناسه متن | `vira-wordpress-sms` |
-| مخزن | [mkvira/vira-wordpress-sms](https://github.com/mkvira/vira-wordpress-sms) |
-| مجوز | GPLv2 یا بالاتر |
+| Version | 0.4.0 |
+| WordPress | 6.5 or later |
+| PHP | 7.4 or later |
+| License | GPL-2.0-or-later |
+| Repository | [mkvira/vira-wordpress-sms](https://github.com/mkvira/vira-wordpress-sms) |
 
-توضیح افزونه: این افزونه برای ورود و ثبت نام با استفاده از پیامک و کد یک بار مصرف می‌باشد و با افزونه ووکامرس نیز سازگاری کامل دارد. این افزونه در حال حاضر با سامانه پیام کوتاه ippanel هماهنگ می‌باشد.
+## Features
 
-## کد کوتاه
+- Sign in and register with an Iranian mobile number and a one-time code.
+- Accept Persian and Latin digits, common number separators, and Iranian country-code prefixes.
+- Send codes through an IPPanel SMS pattern with configurable parameters.
+- Limit code requests and verification attempts.
+- Provide shortcodes for the login form and account link.
+- Use the WooCommerce customer role when WooCommerce is active; otherwise use the WordPress subscriber role.
+- Keep the front-end form responsive and in Persian.
 
-تنها کاری که برای راه‌افتادن فرم لازم است: گذاشتن این کد کوتاه در یک برگه.
+## Requirements
 
-```
-[vira_sms_login]
-```
+- WordPress 6.5 or later.
+- PHP 7.4 or later.
+- An IPPanel account with an active sender number and SMS pattern to send real messages.
+- WooCommerce is optional.
 
-## دکمه‌ی سربرگ
+## Installation
 
-کد کوتاه دوم، برای جایی مثل سربرگ سایت:
+1. Copy or install this plugin in `wp-content/plugins/vira-wordpress-sms`.
+2. Activate **Vira SMS Login** from **Plugins** in the WordPress dashboard.
+3. Open **Settings → Vira SMS Login** and enter the IPPanel service URL, access key, sender number, and pattern code.
+4. Create a page and add the login form shortcode:
 
-```
+   ```text
+   [vira_sms_login]
+   ```
+
+5. Optionally set the login-page and account-page URLs in the plugin settings.
+
+To add a login or account link to a theme header, use:
+
+```text
 [vira_sms_account_button]
 ```
 
-یک لینک می‌سازد و خودش می‌داند کاربر کیست:
+The button links to the configured login page for visitors and the configured account page for signed-in users. When no account page is configured, it uses the WooCommerce account page if available, or the user's profile page.
 
-- **کاربر وارد نشده:** «ورود / ثبت‌نام» و به برگه‌ای می‌رود که در «نشانی برگه‌ی ورود» تعیین شده. اگر آن خالی باشد، به صفحه‌ی ورود وردپرس می‌رود.
-- **کاربر وارد شده:** «حساب کاربری» و به «نشانی حساب کاربری» می‌رود. اگر آن خالی باشد، به صفحه‌ی حساب کاربری ووکامرس می‌رود و در سایتی که ووکامرس ندارد، به پروفایل خود کاربر.
+## Sign-in flow
 
-ظاهر دکمه رنگ و فونت را از قالب می‌گیرد و با کلاس `vira-sms-account` قابل بازنویسی است. متن دکمه‌ها هم با فیلتر `vira_sms_account_button_labels` عوض می‌شود.
+1. The visitor enters an Iranian mobile number. The plugin normalizes Persian and Latin digits, spaces, hyphens, `+98`, and `0098` to a consistent number.
+2. The plugin sends a one-time code through the configured IPPanel pattern. The form masks the destination number and provides a resend countdown.
+3. Existing users sign in after entering the correct code. New users provide a first and last name before their account is created and signed in.
 
-## مسیر ورود و ثبت نام
+The mobile number without its leading zero is used as the WordPress username. The form does not ask for an email address or password. New accounts receive a random password that is not shown to the user; sign-in is handled by SMS.
 
-کاربر سه گام می‌بیند و هیچ‌کدام از گام‌ها صفحه را دوباره بارگذاری نمی‌کند:
+The plugin does not replace or disable `wp-login.php`, so administrators retain the standard WordPress login. Public login links and WooCommerce account-page redirects can optionally point to the SMS login page through the plugin settings.
 
-1. **شماره موبایل** — فقط همین یک فیلد. ارقام فارسی و انگلیسی، فاصله، خط تیره، `+98` و `0098` همه پذیرفته و به شکل یکسان تبدیل می‌شوند. ساختار شماره فقط ایران است (`09xxxxxxxxx`) و کد کشور لازم نیست.
-2. **کد پیامک‌شده** — کد به شماره‌ی واردشده فرستاده می‌شود و شماره‌ی مقصد در متن، پوشیده نشان داده می‌شود (`0912***6789`). تا پایان شمارش معکوس، دکمه‌ی «ارسال دوباره کد» کار نمی‌کند. دکمه‌ی «تغییر شماره» به گام اول برمی‌گردد.
-3. **نام و نام خانوادگی** — فقط برای شماره‌ای که حساب ندارد.
+## Settings
 
-پایان کار:
+The settings page includes:
 
-- اگر شماره از قبل حساب داشت، همان لحظه که کد درست وارد شود وارد می‌شود و به صفحه‌ای می‌رود که در تنظیمات تعیین شده.
-- اگر شماره حساب نداشت، پس از گرفتن نام و نام خانوادگی، حساب ساخته می‌شود و بلافاصله وارد و به همان صفحه هدایت می‌شود.
+- IPPanel service URL, access key, and sender number.
+- SMS pattern code, code parameter name, and additional `key=value` pattern parameters.
+- Code length, expiration time, and resend interval.
+- Post-login redirect, login-page URL, account-page URL, and optional form font.
 
-نام کاربری همان شماره موبایل بدون صفر اول است (`9123456789`). ایمیل نه گرفته می‌شود و نه لازم است. ورود فقط با کد پیامکی است و رمز عبوری در کار نیست.
+Additional pattern parameter values are sent to IPPanel as configured. Do not include secrets in public issue reports or code examples.
 
-## درهای دیگر ورود
+## SMS request
 
-افزونه خودِ `wp-login.php` را دست نمی‌زند؛ ورود مدیران همان‌جا می‌ماند و هیچ‌وقت قفل نمی‌شود. ولی جلوی فرم ورود دوم و بی‌ربط را می‌گیرد:
+The plugin sends a JSON `POST` request to `{service URL}/api/send`:
 
-- اگر **نشانی برگه‌ی ورود** در تنظیمات پر شود، هر لینکی در بخش عمومی سایت که کاربر را به فرم نام کاربری و رمز می‌فرستد، به همان برگه می‌رود.
-- مهمانی که وارد صفحه‌ی حساب کاربری ووکامرس شود، به برگه‌ی فرم هدایت می‌شود. فقط بازدید ساده هدایت می‌شود؛ فرمی که ارسال شده باشد دست‌نخورده می‌ماند.
-- خروج از حساب هم به همان برگه برمی‌گردد، نه به فرم ناشناسی که کاربر تا حالا ندیده.
-- خالی گذاشتن این تنظیم یعنی افزونه هیچ‌کدام از این‌ها را تغییر نمی‌دهد. مسیرهای پیشخوان و خودِ `wp-login.php` همیشه دست‌نخورده می‌مانند.
-
-## تنظیمات
-
-پیشخوان → تنظیمات → ورود و ثبت نام پیامکی. سه بخش:
-
-**اتصال به سامانه پیامک**
-
-- آدرس سرویس (پیش‌فرض `https://edge.ippanel.com/v1`)
-- کلید دسترسی (Access Key) — خالی بگذارید تا کلید فعلی دست‌نخورده بماند
-- شماره فرستنده (مثلاً `3000505`) — خودش به شکل `+983000505` تبدیل می‌شود
-- کلید فعلی را پاک کن (برای برداشتن کلید ذخیره‌شده)
-
-**الگوی پیام**
-
-- کد الگو (Pattern Code)
-- نام پارامتری که کد در آن می‌رود (پیش‌فرض `code`)
-- پارامترهای اضافی الگو، هر خط یکی به شکل `key=value` — مقدارشان می‌تواند فارسی باشد و در همان قالب به سامانه فرستاده می‌شود
-
-**کد و نمایش**
-
-- تعداد ارقام کد (۳ تا ۸، پیش‌فرض ۵)
-- مدت اعتبار کد به دقیقه (پیش‌فرض ۲ دقیقه)
-- فاصله‌ی مجاز بین دو ارسال برای یک شماره (پیش‌فرض ۶۰ ثانیه)
-- نشانی صفحه‌ی پس از ورود (خالی = صفحه‌ی اصلی)
-- نشانی برگه‌ی ورود — همان برگه‌ای که کد کوتاه در آن است. پر شود تا لینک‌های ورود سایت و خروج به آن برگردند؛ خالی بگذارید تا هیچ‌چیز تغییر نکند.
-- نشانی حساب کاربری — جایی که دکمه‌ی سربرگ برای کاربر واردشده باز می‌کند؛ خالی بگذارید تا صفحه‌ی حساب کاربری ووکامرس برود.
-- نام فونت — روی تمام بخش‌های نمایشی افزونه اعمال می‌شود؛ خالی بگذارید تا فونت پوسته بماند
-
-## آنچه به سامانه پیامک فرستاده می‌شود
-
-یک درخواست، مطابق مستندات خود ippanel:
-
-```
-POST {آدرس سرویس}/api/send
-Authorization: {کلید دسترسی}
+```http
+POST {service URL}/api/send
+Authorization: {IPPanel access key}
 Content-Type: application/json
+```
 
+```json
 {
   "sending_type": "pattern",
   "from_number": "+983000505",
-  "code": "{کد الگو}",
+  "code": "{pattern code}",
   "recipients": ["+989123456789"],
   "params": { "code": "12345" }
 }
 ```
 
-شماره‌ها به شکل بین‌المللی (`+98...`) فرستاده می‌شوند و بازتاب خطاهای خود سامانه («اطلاعات وارد شده صحیح نمی‌باشد») در همان قالب به کاربر نشان داده می‌شود.
+Phone numbers are sent in international format. The plugin displays service error messages returned by IPPanel.
 
-## حساب‌ها
+## Privacy and security
 
-- نام کاربری: شماره موبایل بدون صفر اول.
-- ایمیل: هیچ. حساب هیچ نشانی ایمیلی ندارد و هیچ نشانی هم به نام کاربر ساخته نمی‌شود. وردپرس این را می‌پذیرد: ستون `user_email` ایندکس دارد ولی یکتا نیست، و بررسی تکراری‌بودن هم مقدار خالی را نادیده می‌گیرد؛ پس هر تعداد حساب می‌تواند بدون ایمیل باشد. (آزمون شد: دو حساب پشت سر هم بدون ایمیل ساخته شدند و هر دو درست ثبت شدند.)
-- نقش: نقش «مشتری» ووکامرس اگر روی سایت باشد، وگرنه «مشترک». با فیلتر `vira_sms_new_user_role` قابل تغییر است.
-- شماره در متادیتای `vira_sms_mobile` هم ذخیره می‌شود.
-- هیچ ایمیلی — نه خوش‌آمدگویی، نه اطلاع به مدیر — فرستاده نمی‌شود. چون این حساب‌ها ایمیل ندارند، ایمیل‌های ووکامرس (سفارش و بازیابی رمز) هم برایشان فرستادنی نیست؛ ورود و بازیابی از راه پیامک است و به ایمیل نیازی ندارد.
-- برای این حساب‌ها رمز عبور تصادفی و ناشناخته ثبت می‌شود تا ورود با رمز ممکن نباشد؛ راه ورود همان کد پیامکی است.
+- The mobile number is used as the account username and stored in the plugin's `vira_sms_mobile` user metadata.
+- The one-time code and configured pattern parameters are sent from the WordPress site to IPPanel to deliver the SMS. The IPPanel access key is stored in WordPress settings.
+- One-time codes are stored as hashes and expire. Each code can be used once; failed attempts and resend frequency are limited.
+- The registration step requires a verified mobile number in the same session and expires after 15 minutes.
+- The plugin does not send analytics or visitor tracking data to third parties.
+- Uninstalling removes the plugin's settings and temporary data. It does not delete WordPress accounts or mobile numbers saved on those accounts.
 
-## امنیت
+## Testing
 
-- کد به‌صورت هش‌شده ذخیره می‌شود، نه به‌صورت متن.
-- هر کد فقط یک بار کار می‌کند و پس از مدت اعتبارش باطل می‌شود.
-- تعداد تلاش‌های اشتباه محدود است (پیش‌فرض ۵ بار) و تعداد باقی‌مانده به کاربر گفته می‌شود.
-- فاصله‌ی حداقلی بین ارسال‌ها برای هر شماره، و یک سقف تعداد کد در ساعت برای هر نشانی اینترنتی، تا فرم به ابزار خرج‌کردن اعتبار پیامک تبدیل نشود.
-- نشانی اینترنتی سقف با فیلتر `vira_sms_ip_hourly_limit` تغییرپذیر است.
-- همه‌ی درخواست‌ها توکن فرم را بررسی می‌کنند. چون نباید برگه‌ی فرم را از کش سایت بیرون نگه داریم، اسکریپت هنگام باز شدن برگه یک توکن تازه می‌گیرد و اگر توکن کهنه باشد یک بار خودکار تلاش می‌کند.
-- گام «نام و نام خانوادگی» بدون تأیید شماره در همان نشست انجام نمی‌شود و بلیت آن پس از ۱۵ دقیقه می‌سوزد.
-- هیچ کلید، رمز یا داده‌ی حساسی در کد نوشته نشده است.
-
-## ساختار کد
-
-```
-vira-wordpress-sms/
-├── vira-wordpress-sms.php         هدر افزونه و بارگذاری بخش‌ها
-├── uninstall.php                  پاک‌سازی هنگام حذف افزونه (فقط داده‌های خودش)
-├── includes/
-│   ├── class-plugin.php           راه‌انداز
-│   ├── class-settings.php         تنظیمات: پیش‌فرض‌ها، پاک‌سازی، خواندن
-│   ├── class-phone.php            ارقام فارسی و ساختار شماره‌ی ایران
-│   ├── class-otp.php              ساخت، ذخیره‌ی هش‌شده، بررسی و انقضای کد
-│   ├── class-sms-sender.php       آماده‌کردن پیام و سپردنش به درگاه
-│   ├── class-users.php            پیدا کردن، ساختن و وارد کردن حساب
-│   ├── class-ajax.php             چهار نقطه‌ی پایانی گام‌های فرم
-│   ├── class-shortcode.php        کد کوتاه و بارگذاری استایل و اسکریپت
-│   └── gateways/
-│       └── class-ippanel.php      درخواست API سامانه ippanel
-├── admin/
-│   └── class-settings-page.php    صفحه‌ی تنظیمات
-├── assets/
-│   ├── css/vira-sms.css
-│   └── js/vira-sms.js
-├── languages/
-└── tests/
-    └── test-plugin.php            آزمون‌های افزونه روی وردپرس زنده
-```
-
-## نصب
-
-```bash
-cd wp-content/plugins
-git clone <repo-url> vira-wordpress-sms
-wp plugin activate vira-wordpress-sms
-```
-
-سپس در تنظیمات، کلید دسترسی، شماره فرستنده و کد الگو را وارد کنید و کد کوتاه `[vira_sms_login]` را در یک برگه بگذارید.
-
-روش دیگر نصب، بدون دسترسی به ترمینال: پیشخوان → افزونه‌ها → افزودن → بارگذاری افزونه → فایل ZIP افزونه. پوشه‌ی داخل بسته نام درست را دارد و وردپرس بی‌مشکل نصبش می‌کند.
-
-## آزمون‌ها
+Run the plugin checks from the WordPress installation root:
 
 ```bash
 wp eval-file wp-content/plugins/vira-wordpress-sms/tests/test-plugin.php
 ```
 
-این فایل ساختار شماره، هش‌شدن و یک‌بارمصرف‌بودن کد، تنظیمات، درهای ورود (لینک‌های ورود، صفحه‌ی حساب کاربری و خروج)، ساختن درخواست درگاه و خواندن پاسخ‌های سامانه را بررسی می‌کند. تماس‌های اینترنتی را می‌گیرد و رها می‌کند، پس **هیچ پیامکی فرستاده نمی‌شود**. اگر تنظیمات را برای لحظه‌ای عوض کند، همان‌جا به حالت قبل برمی‌گرداند.
+The checks cover number normalization, settings, one-time codes, account behavior, shortcode output, and IPPanel request and response handling. HTTP requests are intercepted during the checks, so no SMS is sent. Temporary settings and codes are restored or removed after the run.
 
-## آنچه عمداً در این نسخه نیست
+## Project layout
 
-- ورود با رمز عبور و تغییر رمز؛
-- فرم ورود در صفحات ووکامرس — کد کوتاه، به‌علاوه‌ی هدایت مهمانِ صفحه‌ی حساب کاربری و خروج به همان برگه (با پر کردن تنظیمات «نشانی برگه‌ی ورود»)؛
-- پیام خوش‌آمدگویی یا هر ایمیل دیگری؛
-- لاگ پیامک‌ها، گزارش هزینه و پنل ارسال گروهی؛
-- پشتیبانی از سامانه‌ی پیامکی دیگر.
+```text
+vira-wordpress-sms/
+├── admin/                 Plugin settings page
+├── assets/                Front-end CSS and JavaScript
+├── includes/              Plugin logic, account flow, and IPPanel gateway
+├── languages/             Translation files
+├── tests/                 WordPress integration checks
+├── LICENSE
+├── README.md
+├── readme.txt             WordPress.org plugin directory readme
+└── vira-wordpress-sms.php Main plugin file
+```
 
-## نکات باز
+## License
 
-1. اگر شماره‌ای از قبل به‌عنوان `billing_phone` روی حسابی در ووکامرس ثبت شده باشد، همان حساب شناخته شود یا نه؟ (اکنون فقط بر اساس نام کاربری و متادیتای `vira_sms_mobile` شناخته می‌شود.)
-2. برای کاربری که وارد شده، در صفحه‌ی فرم پیام «شما وارد حساب خود هستید» با نشانی ادامه نشان داده می‌شود؛ همین رفتار بماند؟
-
-## قواعد کار در این مخزن
-
-- پیام کامیت‌ها انگلیسی و به سبک conventional است؛ نویسنده‌ی کامیت‌ها محمود کاظمی.
-- هیچ رمز، کلید API، شماره‌ی حساب یا فایل پشتیبان پایگاه‌داده در مخزن قرار نمی‌گیرد.
-- هر قابلیت با کامیت مستقل و قابل بازبینی اضافه می‌شود.
+This project is licensed under the GPL-2.0-or-later license. See [LICENSE](LICENSE).

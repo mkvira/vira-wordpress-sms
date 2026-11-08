@@ -1,4 +1,4 @@
-=== افزونه ورود و ثبت نام پیامکی ویرا ===
+=== Vira SMS Login for WordPress ===
 Contributors: bcloob
 Tags: sms, login, woocommerce, otp, mobile
 Requires at least: 6.5
@@ -8,71 +8,70 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-ورود و ثبت‌نام با شماره موبایل و کد یک‌بارمصرف پیامکی؛ سازگار با ووکامرس و ippanel.
+Passwordless WordPress login and registration with Iranian mobile numbers and one-time SMS codes. Integrates with IPPanel and works with or without WooCommerce.
 
-== توضیحات ==
+== Description ==
 
-افزونه ورود و ثبت‌نام بدون رمز عبور را با شماره موبایل ایران و کد یک‌بارمصرف پیامکی فراهم می‌کند. ارسال پیامک از طریق حساب و الگوی پیامک خودتان در IPPanel انجام می‌شود. در صورت نصب ووکامرس، حساب تازه با نقش مشتری ساخته می‌شود.
+Vira SMS Login provides passwordless WordPress login and registration using Iranian mobile numbers and one-time SMS codes. Messages are sent through your own IPPanel account and SMS pattern. When WooCommerce is active, new accounts use the customer role.
 
-برای نمایش فرم ورود، کد کوتاه زیر را در یک برگه قرار دهید:
+Add the login form to a page with this shortcode:
 
 `[vira_sms_login]`
 
-برای نمایش دکمه ورود یا حساب کاربری در سربرگ:
+Add a login or account button, for example in a theme header, with:
 
 `[vira_sms_account_button]`
 
-== امکانات ==
+== Features ==
 
-* ورود و ثبت‌نام با شماره موبایل ایران و رمز یک‌بارمصرف.
-* پذیرش ارقام فارسی و انگلیسی و شکل‌های رایج شماره ایران.
-* اتصال به الگوی پیامک IPPanel با امکان تعریف پارامترهای الگو.
-* محدودیت ارسال کد و بررسی تعداد تلاش‌های ناموفق.
-* سازگاری با نقش مشتری ووکامرس و کد کوتاه مستقل برای دکمه حساب.
-* رابط فارسی واکنش‌گرا.
+* Sign in and register with an Iranian mobile number and a one-time code.
+* Accept Persian and Latin digits and common Iranian phone-number formats.
+* Connect to IPPanel SMS patterns and configure pattern parameters.
+* Limit code requests and failed verification attempts.
+* Work with or without WooCommerce.
+* Display a responsive Persian-language interface.
 
-== نصب ==
+== Installation ==
 
-1. بارگذاری پوشه افزونه در `wp-content/plugins` و فعال‌کردن آن از بخش افزونه‌ها.
-2. رفتن به «تنظیمات ← ورود و ثبت نام پیامکی».
-3. واردکردن نشانی سرویس، کلید دسترسی، شماره فرستنده و کد الگوی IPPanel.
-4. ساخت یک برگه و قراردادن `[vira_sms_login]` در محتوای آن.
-5. در صورت نیاز، نشانی برگه ورود و نشانی حساب کاربری را در تنظیمات وارد کنید.
+1. Upload the plugin folder to `wp-content/plugins` and activate it from the Plugins screen.
+2. Open **Settings → Vira SMS Login**.
+3. Enter the IPPanel service URL, access key, sender number, and pattern code.
+4. Create a page and add `[vira_sms_login]` to its content.
+5. Optionally configure the login-page and account-page URLs.
 
-برای ارسال پیامک، باید حساب و الگوی فعال در IPPanel داشته باشید. هزینه و شرایط ارسال پیامک تابع حساب شما در آن سرویس است.
+An IPPanel account with an active sender number and pattern is required to send messages. SMS charges and service terms are determined by your IPPanel account.
 
-== پرسش‌های متداول ==
+== Frequently Asked Questions ==
 
-= آیا افزونه رمز عبور را تغییر می‌دهد یا ورود مدیر را می‌بندد؟ =
+= Does the plugin change passwords or disable administrator login? =
 
-خیر. افزونه مسیر `wp-login.php` را دست‌کاری نمی‌کند. فرم پیامکی با کد کوتاه نمایش داده می‌شود و هدایت لینک‌های ورود عمومی اختیاری است.
+No. The plugin does not modify `wp-login.php`. The SMS form is displayed through a shortcode, and redirecting public login links is optional.
 
-= آیا برای ثبت‌نام ایمیل لازم است؟ =
+= Is an email address required for registration? =
 
-خیر. ثبت‌نام با شماره موبایل انجام می‌شود و ایمیل از کاربر پرسیده نمی‌شود.
+No. Registration uses a mobile number and does not ask the visitor for an email address.
 
-= آیا برای استفاده از افزونه به ووکامرس نیاز دارم؟ =
+= Is WooCommerce required? =
 
-خیر. افزونه بدون ووکامرس هم کار می‌کند؛ در آن حالت نقش مشترک برای حساب تازه استفاده می‌شود.
+No. The plugin works without WooCommerce. New accounts use the WordPress subscriber role when WooCommerce is not active.
 
-= پیامک ارسال نمی‌شود؛ چه چیزهایی را بررسی کنم؟ =
+= What should I check if SMS messages are not delivered? =
 
-نشانی سرویس، کلید دسترسی، شماره فرستنده، کد الگو و نام پارامتر کد را در تنظیمات بررسی کنید. حساب IPPanel باید امکان ارسال با همان شماره فرستنده و الگو را داشته باشد.
+Check the service URL, access key, sender number, pattern code, and code parameter name in the plugin settings. Your IPPanel account must be allowed to send using the configured sender number and pattern.
 
-== حریم خصوصی ==
+== Privacy ==
 
-هنگامی که بازدیدکننده درخواست کد ورود می‌کند، شماره موبایل و کد یک‌بارمصرف از سرور سایت به سرویس IPPanel فرستاده می‌شود تا پیامک ارسال شود. پارامترهای اضافی الگو نیز مطابق تنظیمات مدیر سایت ارسال می‌شوند. کلید دسترسی IPPanel در تنظیمات وردپرس ذخیره می‌شود.
+When a visitor requests a login code, the mobile number, one-time code, and configured pattern parameters are sent from the site to IPPanel to deliver the SMS. The IPPanel access key is stored in WordPress settings.
 
-شماره موبایل برای حساب کاربری در وردپرس به‌عنوان نام کاربری و در داده‌های متای افزونه نگهداری می‌شود. کد یک‌بارمصرف به‌صورت هش‌شده و فقط تا پایان مهلتش در داده موقت وردپرس نگهداری می‌شود. افزونه برای این فرایند ابزار تحلیل یا ردیابی بازدیدکننده به سرویس بیرونی نمی‌فرستد.
+The mobile number is used as the WordPress username and stored in the plugin's user metadata. The one-time code is stored as a hash in a temporary WordPress record until it expires. The plugin does not send analytics or visitor tracking data to third-party services.
 
-با حذف افزونه، تنظیمات و داده‌های موقت خودش پاک می‌شوند؛ حساب‌های ساخته‌شده و شماره‌های ثبت‌شده در حساب‌ها حذف نمی‌شوند.
+When the plugin is uninstalled, its settings and temporary data are removed. User accounts and mobile numbers stored on those accounts are not deleted.
 
-== تغییرات ==
+== Changelog ==
 
 = 0.4.0 =
-* افزودن کد کوتاه دکمه ورود و حساب کاربری.
-* بهبود مسیر ورود و ثبت‌نام، نمایش فرم و سازگاری با حساب‌های ووکامرس.
+* Add a shortcode for the login and account button.
+* Improve the login and registration flow, form display, and WooCommerce account compatibility.
 
 = 0.3.1 =
-* انتشار نسخه پایدار پیشین.
-
+* Previous stable release.
